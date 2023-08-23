@@ -1,6 +1,7 @@
 package benicio.soluces.appdegesto.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,7 +36,10 @@ public class ContabilidadeActivity extends AppCompatActivity {
         activityBinding = ActivityContabilidadeBinding.inflate(getLayoutInflater());
         setContentView(activityBinding.getRoot());
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         confirugarComponentes();
+        selecaoDoTempoDaTransicao();
 
     }
 

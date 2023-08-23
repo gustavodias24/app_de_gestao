@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">app de gestão</string>
+    <string name="login_da_empresa">Login da empresa</string>
+    <string name="senha">Senha</string>
+</resources>

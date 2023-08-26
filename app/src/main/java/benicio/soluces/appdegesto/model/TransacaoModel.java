@@ -2,7 +2,8 @@ package benicio.soluces.appdegesto.model;
 
 public class TransacaoModel {
     String data, categoria, metodoPagamento;
-    Double receita, despesa;
+    int tipo;
+    Double valor;
 
     public String getData() {
         return data;
@@ -28,19 +29,19 @@ public class TransacaoModel {
         this.metodoPagamento = metodoPagamento;
     }
 
-    public Double getReceita() {
-        return receita;
+    public int getTipo() {
+        return tipo;
     }
 
-    public void setReceita(Double receita) {
-        this.receita = receita;
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 
-    public Double getDespesa() {
-        return despesa;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setDespesa(Double despesa) {
-        this.despesa = despesa;
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 }

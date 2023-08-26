@@ -1,6 +1,7 @@
 package benicio.soluces.appdegesto.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +38,14 @@ public class AdapterTransacao extends RecyclerView.Adapter<AdapterTransacao.MyVi
 
         holder.data.setText("Data: "+ transacao.getData());
         holder.categoria.setText("Categoria: "+ transacao.getCategoria());
-        holder.receita.setText("Receita: "+ transacao.getReceita());
-        holder.despesa.setText("Despesa: "+ transacao.getDespesa());
 
+        if ( transacao.getTipo() == 0){
+            holder.valor.setTextColor(Color.GREEN);
+            holder.valor.setText("Receita: " + transacao.getValor());
+        }else if ( transacao.getTipo() == 0 ){
+            holder.valor.setTextColor(Color.RED);
+            holder.valor.setText("Despesa: " + transacao.getValor());
+        }
     }
 
     @Override
@@ -49,14 +55,13 @@ public class AdapterTransacao extends RecyclerView.Adapter<AdapterTransacao.MyVi
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView data, categoria, receita, despesa;
+        TextView data, categoria, valor;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             data = itemView.findViewById(R.id.data_text);
             categoria = itemView.findViewById(R.id.categoria_text);
-            receita = itemView.findViewById(R.id.receita_text);
-            despesa = itemView.findViewById(R.id.despesa_text);
+            valor = itemView.findViewById(R.id.valor_text);
         }
     }
 }

@@ -1,5 +1,6 @@
 package benicio.soluces.appdegesto.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,10 +20,11 @@ import java.util.List;
 import benicio.soluces.appdegesto.R;
 import benicio.soluces.appdegesto.adapter.AdapterTransacao;
 import benicio.soluces.appdegesto.databinding.ActivityContabilidadeBinding;
+import benicio.soluces.appdegesto.databinding.AdicionarTransicaoLayoutBinding;
 import benicio.soluces.appdegesto.model.TransacaoModel;
 
 public class ContabilidadeActivity extends AppCompatActivity {
-
+    private Dialog dialogReceita, dialogDespesa, dialogTranferi, dialogCarregando;
     int tempoTransicao = 0;
     private ActivityContabilidadeBinding activityBinding;
     private Button receitaBtn, despesaBtn, transfeBtn, transacoesBtn, verTodosBtn, verHojeBtn, verMesBtn;
@@ -41,8 +44,42 @@ public class ContabilidadeActivity extends AppCompatActivity {
         confirugarComponentes();
         selecaoDoTempoDaTransicao();
 
-    }
+        criarAlertDialogTransicao(0, "Adicionar Receita");
+        criarAlertDialogTransicao(1, "Adicionar Despesa");
+        criarAlertDialogTransicao(2, "Adicionar Transferência");
 
+        activityBinding.receitaBtn.setOnClickListener( addReceita -> {
+            dialogReceita.show();
+        });
+
+        activityBinding.despesaBtn.setOnClickListener( addDespesa -> {
+            dialogDespesa.show();
+        });
+
+        activityBinding.transferenciaBtn.setOnClickListener( addtransferencia -> {
+            dialogTranferi.show();
+        });
+
+
+    }
+    public void criarAlertDialogTransicao(int tipo, String title){
+        AlertDialog.Builder b = new AlertDialog.Builder(ContabilidadeActivity.this);
+        AdicionarTransicaoLayoutBinding dialogBinding = AdicionarTransicaoLayoutBinding.inflate(getLayoutInflater());
+        dialogBinding.titleTransacaoText.setText(title);
+        b.setView(dialogBinding.getRoot());
+
+        switch (tipo){
+            case 0:
+                dialogReceita = b.create();
+                break;
+            case 1:
+                dialogDespesa = b.create();
+                break;
+            default:
+                dialogTranferi = b.create();
+                break;
+        }
+    }
     public void confirugarComponentes(){
         receitaBtn = activityBinding.receitaBtn;
         despesaBtn = activityBinding.despesaBtn;

@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_margin="16dp"
-        android:foregroundGravity="center"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".activity.MainActivity">
+        android:padding="8dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="Credenciamento."
+            android:text="Criar um novo registro"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -38,8 +35,8 @@
                 android:id="@+id/error_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -54,28 +51,20 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/error_senha"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/entrar_btn"
+            android:id="@+id/criar_empresa_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:drawableTint="#673AB7"
-            android:text="Entrar"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="Criar"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/cadastrar_empresa_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cadastrar nova empresa."
-            android:textColor="#03A9F4" />
-
-
     </LinearLayout>
 </ScrollView>

@@ -78,17 +78,20 @@
             android:hint="Data"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.vicmikhailau.maskededittext.MaskedEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:inputType="datetime" />
+                android:inputType="datetime"
+                app:mask="##/##/####"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/salvar_transacao_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

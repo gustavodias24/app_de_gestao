@@ -42,9 +42,12 @@ public class AdapterTransacao extends RecyclerView.Adapter<AdapterTransacao.MyVi
         if ( transacao.getTipo() == 0){
             holder.valor.setTextColor(Color.GREEN);
             holder.valor.setText("Receita: " + transacao.getValor());
-        }else if ( transacao.getTipo() == 0 ){
+        }else if ( transacao.getTipo() == 1 ){
             holder.valor.setTextColor(Color.RED);
             holder.valor.setText("Despesa: " + transacao.getValor());
+        }else if ( transacao.getTipo() == 2){
+            holder.valor.setTextColor(Color.BLUE);
+            holder.valor.setText("Transferêcnia: " + transacao.getValor());
         }
     }
 

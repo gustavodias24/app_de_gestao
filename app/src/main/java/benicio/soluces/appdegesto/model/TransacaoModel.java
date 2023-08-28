@@ -5,6 +5,14 @@ public class TransacaoModel {
     int tipo;
     Double valor;
 
+    public TransacaoModel(String data, String categoria, String metodoPagamento, int tipo, Double valor) {
+        this.data = data;
+        this.categoria = categoria;
+        this.metodoPagamento = metodoPagamento;
+        this.tipo = tipo;
+        this.valor = valor;
+    }
+
     public String getData() {
         return data;
     }

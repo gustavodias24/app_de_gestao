@@ -9,26 +9,47 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import benicio.soluces.appdegesto.R;
+import benicio.soluces.appdegesto.Service;
 import benicio.soluces.appdegesto.adapter.AdapterTransacao;
 import benicio.soluces.appdegesto.databinding.ActivityContabilidadeBinding;
 import benicio.soluces.appdegesto.databinding.AdicionarTransicaoLayoutBinding;
+import benicio.soluces.appdegesto.model.ListaResumoTransacaoModel;
+import benicio.soluces.appdegesto.model.ResponseModel;
 import benicio.soluces.appdegesto.model.TransacaoModel;
+import benicio.soluces.appdegesto.util.RetrofitUtil;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ContabilidadeActivity extends AppCompatActivity {
+
     private Dialog dialogReceita, dialogDespesa, dialogTranferi, dialogCarregando;
+    private Retrofit retrofit;
+    private Service service;
     int tempoTransicao = 0;
     private ActivityContabilidadeBinding activityBinding;
     private Button receitaBtn, despesaBtn, transfeBtn, transacoesBtn, verTodosBtn, verHojeBtn, verMesBtn;
     private TextView totalRecebidoText, totalPagoText, saldoText;
+    private SharedPreferences preferences;
     private RecyclerView recyclerTransacoes;
     private AdapterTransacao adapter;
     private List<TransacaoModel> lista = new ArrayList<>();
@@ -41,6 +62,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+        preferences = getSharedPreferences("empresa_preferences", MODE_PRIVATE);
         confirugarComponentes();
         selecaoDoTempoDaTransicao();
 
@@ -60,13 +82,41 @@ public class ContabilidadeActivity extends AppCompatActivity {
             dialogTranferi.show();
         });
 
+        activityBinding.trandacoesBtn.setOnClickListener( transaView -> {
+            finish();
+            startActivity(new Intent(getApplicationContext(), TransacoesActivity.class));
+        });
 
+        dialogCarregando = RetrofitUtil.criarDialogCarregando(ContabilidadeActivity.this);
+        retrofit = RetrofitUtil.criarRetrofit();
+        service = RetrofitUtil.criarServie(retrofit);
+
+        getAllTransicoes();
     }
     public void criarAlertDialogTransicao(int tipo, String title){
         AlertDialog.Builder b = new AlertDialog.Builder(ContabilidadeActivity.this);
         AdicionarTransicaoLayoutBinding dialogBinding = AdicionarTransicaoLayoutBinding.inflate(getLayoutInflater());
         dialogBinding.titleTransacaoText.setText(title);
         b.setView(dialogBinding.getRoot());
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat  dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        dialogBinding.dataField.getEditText().setText(dateFormat.format(calendar.getTime()));
+
+        dialogBinding.salvarTransacaoBtn.setOnClickListener( saveReceita -> {
+            String valor, categoria, metodo, data;
+
+            valor = dialogBinding.valorField.getEditText().getText().toString();
+            categoria = dialogBinding.categoriaField.getEditText().getText().toString();
+            metodo = dialogBinding.metodoPagamentoField.getEditText().getText().toString();
+            data = dialogBinding.dataField.getEditText().getText().toString();
+
+            salvarTransicao(new TransacaoModel(data, categoria, metodo, tipo, Double.parseDouble(valor)));
+
+            dialogBinding.valorField.getEditText().setText("");
+            dialogBinding.categoriaField.getEditText().setText("");
+            dialogBinding.metodoPagamentoField.getEditText().setText("");
+        });
 
         switch (tipo){
             case 0:
@@ -103,6 +153,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     public void selecaoDoTempoDaTransicao(){
 
         verTodosBtn.setOnClickListener( verTodosView -> {
+            getAllTransicoes();
             tempoTransicao = 0;
 
             verTodosBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.botao));
@@ -115,6 +166,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
         });
 
         verHojeBtn.setOnClickListener( verHojeView -> {
+            getHojeTransicoes();
             tempoTransicao = 1;
 
             verTodosBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
@@ -127,6 +179,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
         });
 
         verMesBtn.setOnClickListener( vewMesView ->{
+            getMesTransicoes();
             tempoTransicao = 2;
 
             verTodosBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
@@ -140,6 +193,102 @@ public class ContabilidadeActivity extends AppCompatActivity {
 
     }
 
+    public void salvarTransicao(TransacaoModel transacaoModel){
+        dialogCarregando.show();
+        service.salvarTransacao(transacaoModel, preferences.getString("login", "")).enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                dialogCarregando.dismiss();
+                Toast.makeText(ContabilidadeActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                dialogCarregando.dismiss();
+            }
+        });
+    }
+
+    public void getAllTransicoes(){
+        lista.clear();
+        dialogCarregando.show();
+        service.getTodasTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+            @Override
+            public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
+                dialogCarregando.dismiss();
+
+                if ( response.isSuccessful() ){
+                    lista.addAll(response.body().getLista());
+                    adapter.notifyDataSetChanged();
+                    activityBinding.totalRecebidoText.setText(
+                            String.format("Recebido: %.2f", response.body().getReceitas()));
+                    activityBinding.totalPagoText.setText(
+                            String.format("Pago: %.2f", response.body().getDespesas()));
+                    activityBinding.totalSaldoText.setText(
+                            String.format("Saldo: %.2f", response.body().getSaldo()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListaResumoTransacaoModel> call, Throwable t) {
+                dialogCarregando.dismiss();
+            }
+        });
+    }
+
+    public void getHojeTransicoes(){
+        lista.clear();
+        dialogCarregando.show();
+        service.getHojeTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+            @Override
+            public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
+                dialogCarregando.dismiss();
+
+                if ( response.isSuccessful() ){
+                    lista.addAll(response.body().getLista());
+                    adapter.notifyDataSetChanged();
+                    activityBinding.totalRecebidoText.setText(
+                            String.format("Recebido: %.2f", response.body().getReceitas()));
+                    activityBinding.totalPagoText.setText(
+                            String.format("Pago: %.2f", response.body().getDespesas()));
+                    activityBinding.totalSaldoText.setText(
+                            String.format("Saldo: %.2f", response.body().getSaldo()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListaResumoTransacaoModel> call, Throwable t) {
+                dialogCarregando.dismiss();
+            }
+        });
+    }
+
+    public void getMesTransicoes(){
+        lista.clear();
+        dialogCarregando.show();
+        service.getMesTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+            @Override
+            public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
+                dialogCarregando.dismiss();
+
+                if ( response.isSuccessful() ){
+                    lista.addAll(response.body().getLista());
+                    adapter.notifyDataSetChanged();
+                    activityBinding.totalRecebidoText.setText(
+                            String.format("Recebido: %.2f", response.body().getReceitas()));
+                    activityBinding.totalPagoText.setText(
+                            String.format("Pago: %.2f", response.body().getDespesas()));
+                    activityBinding.totalSaldoText.setText(
+                            String.format("Saldo: %.2f", response.body().getSaldo()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListaResumoTransacaoModel> call, Throwable t) {
+                dialogCarregando.dismiss();
+            }
+        });
+    }
     @Override
     protected void onResume() {
         super.onResume();

@@ -54,6 +54,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     private AdapterTransacao adapter;
     private List<TransacaoModel> lista = new ArrayList<>();
 
+    private String LOGIN_QUERY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +93,14 @@ public class ContabilidadeActivity extends AppCompatActivity {
         service = RetrofitUtil.criarServie(retrofit);
 
         getAllTransicoes();
+
+        Bundle b = getIntent().getExtras();
+
+        if ( !b.getString("login", "").isEmpty() ){
+            LOGIN_QUERY = b.getString("login", "");
+        }else{
+            LOGIN_QUERY = preferences.getString("login", "");
+        }
     }
     public void criarAlertDialogTransicao(int tipo, String title){
         AlertDialog.Builder b = new AlertDialog.Builder(ContabilidadeActivity.this);
@@ -195,7 +204,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
 
     public void salvarTransicao(TransacaoModel transacaoModel){
         dialogCarregando.show();
-        service.salvarTransacao(transacaoModel, preferences.getString("login", "")).enqueue(new Callback<ResponseModel>() {
+        service.salvarTransacao(transacaoModel, LOGIN_QUERY).enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 dialogCarregando.dismiss();
@@ -212,7 +221,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     public void getAllTransicoes(){
         lista.clear();
         dialogCarregando.show();
-        service.getTodasTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+        service.getTodasTransacoes(LOGIN_QUERY).enqueue(new Callback<ListaResumoTransacaoModel>() {
             @Override
             public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
                 dialogCarregando.dismiss();
@@ -239,7 +248,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     public void getHojeTransicoes(){
         lista.clear();
         dialogCarregando.show();
-        service.getHojeTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+        service.getHojeTransacoes(LOGIN_QUERY).enqueue(new Callback<ListaResumoTransacaoModel>() {
             @Override
             public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
                 dialogCarregando.dismiss();
@@ -266,7 +275,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     public void getMesTransicoes(){
         lista.clear();
         dialogCarregando.show();
-        service.getMesTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+        service.getMesTransacoes(LOGIN_QUERY).enqueue(new Callback<ListaResumoTransacaoModel>() {
             @Override
             public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
                 dialogCarregando.dismiss();

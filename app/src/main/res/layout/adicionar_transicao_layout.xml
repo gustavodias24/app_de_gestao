@@ -88,13 +88,13 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        
 
         <Button
             android:id="@+id/salvar_transacao_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:backgroundTint="@color/botao"
             android:gravity="center"
             android:text="Salvar"
             android:textColor="#F4F4F4"

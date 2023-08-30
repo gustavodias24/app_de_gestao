@@ -16,6 +16,12 @@
         android:orientation="vertical"
         tools:context=".activity.MainActivity">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@raw/logomaior" />
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
@@ -64,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/botao"
             android:drawableTint="#673AB7"
             android:text="Entrar"
             android:textColor="#FFFFFF"

@@ -63,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:backgroundTint="@color/botao"
             android:text="Criar"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />

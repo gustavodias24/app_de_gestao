@@ -24,6 +24,10 @@ public class RetrofitUtil {
                 .build();
     }
 
+    public static Service criarService(Retrofit retrofit){
+        return  retrofit.create(Service.class);
+    }
+
     public static Service criarServie(Retrofit retrofit){
         return retrofit.create(Service.class);
     }

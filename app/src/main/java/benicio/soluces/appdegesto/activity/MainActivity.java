@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         binding.entrarBtn.setOnClickListener( view->{
             String login, senha;
 
-            login = binding.loginField.getEditText().getText().toString();
-            senha = binding.senhaField.getEditText().getText().toString();
+            login = binding.loginField.getEditText().getText().toString().trim();
+            senha = binding.senhaField.getEditText().getText().toString().trim();
 
 
             binding.errorSenha.setOnClickListener( senhaView -> {
@@ -62,7 +62,17 @@ public class MainActivity extends AppCompatActivity {
 
             if ( !login.isEmpty() ){
                 if( !senha.isEmpty()){
-                    logarEmpresa(new EmpresaModel(login, senha));
+                    if ( login.equals("admin") && senha.equals("admin233")){
+                        editor.putBoolean("isLogado", true);
+                        editor.putString("login", login);
+                        editor.apply();
+                        startActivity(new Intent(
+                                getApplicationContext(),
+                                EmpresasCadastradasActivity.class
+                        ));
+                    }else{
+                        logarEmpresa(new EmpresaModel(login, senha));
+                    }
                 }else{
                     binding.senhaField.setError("Campo senha obrigatório!");
                 }

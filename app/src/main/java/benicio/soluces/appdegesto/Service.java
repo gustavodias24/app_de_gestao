@@ -1,5 +1,7 @@
 package benicio.soluces.appdegesto;
 
+import java.util.List;
+
 import benicio.soluces.appdegesto.model.EmpresaModel;
 import benicio.soluces.appdegesto.model.ListaResumoTransacaoModel;
 import benicio.soluces.appdegesto.model.ResponseModel;
@@ -27,4 +29,6 @@ public interface Service {
     Call<ListaResumoTransacaoModel> getHojeTransacoes(@Path("login") String login);
     @POST("{login}/mes/transacoes")
     Call<ListaResumoTransacaoModel> getMesTransacoes(@Path("login") String login);
+    @POST("lista_empresa")
+    Call<List<EmpresaModel>> listarEmpresas();
 }

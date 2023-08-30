@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:layout_weight="1"
-                    android:backgroundTint="#673AB7"
+                    android:backgroundTint="@color/botao"
                     android:text="Todos"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />

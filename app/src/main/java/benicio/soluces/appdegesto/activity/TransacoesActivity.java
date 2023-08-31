@@ -37,6 +37,8 @@ public class TransacoesActivity extends AppCompatActivity {
     private AdapterTransacao adapter;
     private List<TransacaoModel> lista = new ArrayList<>();
     private SharedPreferences preferences;
+    private String LOGIN_QUERY;
+    private Bundle b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,26 +57,48 @@ public class TransacoesActivity extends AppCompatActivity {
         dialogCarregando = RetrofitUtil.criarDialogCarregando(TransacoesActivity.this);
         retrofit = RetrofitUtil.criarRetrofit();
         service = RetrofitUtil.criarServie(retrofit);
-        getAllTransicoes();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Todas as transações");
+
+        b = getIntent().getExtras();
+        if ( b != null){
+            if ( b.getString("login", "") != null &&  !b.getString("login", "").isEmpty()){
+                LOGIN_QUERY = b.getString("login", "");
+            }
+        }
+        else{
+            LOGIN_QUERY = preferences.getString("login", "");
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if ( item.getItemId() == android.R.id.home){
-            finish();
-            startActivity(new Intent(getApplicationContext(), ContabilidadeActivity.class));
+
+            Intent i = new Intent(getApplicationContext(), ContabilidadeActivity.class);
+            if ( b == null){
+                finish();
+            }else{
+                i.putExtra("login", b.getString("login", ""));
+            }
+
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getAllTransicoes();
     }
 
     public void getAllTransicoes(){
         lista.clear();
         dialogCarregando.show();
-        service.getTodasTransacoes(preferences.getString("login", "")).enqueue(new Callback<ListaResumoTransacaoModel>() {
+        service.getTodasTransacoes(LOGIN_QUERY).enqueue(new Callback<ListaResumoTransacaoModel>() {
             @Override
             public void onResponse(Call<ListaResumoTransacaoModel> call, Response<ListaResumoTransacaoModel> response) {
                 dialogCarregando.dismiss();

@@ -55,6 +55,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     private List<TransacaoModel> lista = new ArrayList<>();
 
     private String LOGIN_QUERY;
+    private Bundle b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+        b = getIntent().getExtras();
         preferences = getSharedPreferences("empresa_preferences", MODE_PRIVATE);
         confirugarComponentes();
         selecaoDoTempoDaTransicao();
@@ -84,24 +86,29 @@ public class ContabilidadeActivity extends AppCompatActivity {
         });
 
         activityBinding.trandacoesBtn.setOnClickListener( transaView -> {
-            finish();
-            startActivity(new Intent(getApplicationContext(), TransacoesActivity.class));
+            Intent i = new Intent(getApplicationContext(), TransacoesActivity.class);
+            if ( b == null){
+                finish();
+            }else{
+                i.putExtra("login", b.getString("login", ""));
+            }
+            startActivity(i);
         });
 
         dialogCarregando = RetrofitUtil.criarDialogCarregando(ContabilidadeActivity.this);
         retrofit = RetrofitUtil.criarRetrofit();
         service = RetrofitUtil.criarServie(retrofit);
 
-        getAllTransicoes();
-
-        Bundle b = getIntent().getExtras();
-
-        if ( !b.getString("login", "").isEmpty() ){
-            LOGIN_QUERY = b.getString("login", "");
-        }else{
+        if ( b != null){
+            if ( b.getString("login", "") != null &&  !b.getString("login", "").isEmpty()){
+                LOGIN_QUERY = b.getString("login", "");
+            }
+        }
+        else{
             LOGIN_QUERY = preferences.getString("login", "");
         }
     }
+
     public void criarAlertDialogTransicao(int tipo, String title){
         AlertDialog.Builder b = new AlertDialog.Builder(ContabilidadeActivity.this);
         AdicionarTransicaoLayoutBinding dialogBinding = AdicionarTransicaoLayoutBinding.inflate(getLayoutInflater());
@@ -162,16 +169,7 @@ public class ContabilidadeActivity extends AppCompatActivity {
     public void selecaoDoTempoDaTransicao(){
 
         verTodosBtn.setOnClickListener( verTodosView -> {
-            getAllTransicoes();
-            tempoTransicao = 0;
-
-            verTodosBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.botao));
-            verHojeBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
-            verMesBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
-
-            verTodosBtn.setTextColor(Color.parseColor("#FFFFFFFF"));
-            verHojeBtn.setTextColor(Color.parseColor("#673AB7"));
-            verMesBtn.setTextColor(Color.parseColor("#673AB7"));
+            listarTodos();
         });
 
         verHojeBtn.setOnClickListener( verHojeView -> {
@@ -301,6 +299,20 @@ public class ContabilidadeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        listarTodos();
+    }
+
+    public void listarTodos(){
+        getAllTransicoes();
+        tempoTransicao = 0;
+
+        verTodosBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.botao));
+        verHojeBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
+        verMesBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
+
+        verTodosBtn.setTextColor(Color.parseColor("#FFFFFFFF"));
+        verHojeBtn.setTextColor(Color.parseColor("#673AB7"));
+        verMesBtn.setTextColor(Color.parseColor("#673AB7"));
     }
 
 

@@ -132,9 +132,9 @@ public class ContabilidadeActivity extends AppCompatActivity {
         dialogBinding.salvarTransacaoBtn.setOnClickListener( saveReceita -> {
             String valor, categoria, metodo, data, contaOrigem;
 
-            contaOrigem = dialogBinding.contaOrigemField.getEditText().toString();
+            contaOrigem = dialogBinding.contaOrigemField.getEditText().getText().toString();
             valor = dialogBinding.valorField.getEditText().getText().toString();
-            categoria = dialogBinding.categoriaMenu.getEditText().toString();
+            categoria = dialogBinding.categoriaMenu.getEditText().getText().toString();
             metodo = dialogBinding.metodoPagamentoField.getEditText().getText().toString();
             data = dialogBinding.dataField.getEditText().getText().toString();
 

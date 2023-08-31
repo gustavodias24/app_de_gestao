@@ -37,7 +37,10 @@ public class AdapterTransacao extends RecyclerView.Adapter<AdapterTransacao.MyVi
         TransacaoModel transacao = lista.get(position);
 
         holder.data.setText("Data: "+ transacao.getData());
-        holder.categoria.setText("Categoria: "+ transacao.getCategoria());
+
+        String contaOrigem = transacao.getContaOirigem() != null ?"Conta de origem: " + transacao.getContaOirigem() : "Conta de origem: Não informada.";
+
+        holder.categoria.setText("Categoria: "+ transacao.getCategoria() + "\n" + contaOrigem);
 
         if ( transacao.getTipo() == 0){
             holder.valor.setTextColor(Color.GREEN);

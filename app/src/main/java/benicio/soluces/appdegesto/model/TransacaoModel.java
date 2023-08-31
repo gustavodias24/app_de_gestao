@@ -1,17 +1,29 @@
 package benicio.soluces.appdegesto.model;
 
 public class TransacaoModel {
-    String data, categoria, metodoPagamento;
+    String data, categoria, metodoPagamento, contaOirigem;
     int tipo;
-    Double valor;
 
-    public TransacaoModel(String data, String categoria, String metodoPagamento, int tipo, Double valor) {
+    public String getContaOirigem() {
+        return contaOirigem;
+    }
+
+    public TransacaoModel(String data, String categoria, String metodoPagamento, String contaOirigem, int tipo, Double valor) {
         this.data = data;
         this.categoria = categoria;
         this.metodoPagamento = metodoPagamento;
+        this.contaOirigem = contaOirigem;
         this.tipo = tipo;
         this.valor = valor;
     }
+
+    public void setContaOirigem(String contaOirigem) {
+        this.contaOirigem = contaOirigem;
+    }
+
+    Double valor;
+
+
 
     public String getData() {
         return data;

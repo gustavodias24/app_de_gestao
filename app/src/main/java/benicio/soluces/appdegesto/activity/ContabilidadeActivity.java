@@ -1,5 +1,6 @@
 package benicio.soluces.appdegesto.activity;
 
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -13,16 +14,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.tabs.TabLayout;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -119,18 +122,27 @@ public class ContabilidadeActivity extends AppCompatActivity {
         SimpleDateFormat  dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         dialogBinding.dataField.getEditText().setText(dateFormat.format(calendar.getTime()));
 
-        dialogBinding.salvarTransacaoBtn.setOnClickListener( saveReceita -> {
-            String valor, categoria, metodo, data;
+        String[] items = {"Administrativo", "Funcionário", "Imposto", "Veículos", "Divulgação", "Investimento", "Despesas Extra"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, items);
+        TextInputLayout categoriaMenu = dialogBinding.categoriaMenu;
+        AutoCompleteTextView autoCompleteTextView = categoriaMenu.findViewById(R.id.autocomplete);
 
+        autoCompleteTextView.setAdapter(adapter);
+
+        dialogBinding.salvarTransacaoBtn.setOnClickListener( saveReceita -> {
+            String valor, categoria, metodo, data, contaOrigem;
+
+            contaOrigem = dialogBinding.contaOrigemField.getEditText().toString();
             valor = dialogBinding.valorField.getEditText().getText().toString();
-            categoria = dialogBinding.categoriaField.getEditText().getText().toString();
+            categoria = dialogBinding.categoriaMenu.getEditText().toString();
             metodo = dialogBinding.metodoPagamentoField.getEditText().getText().toString();
             data = dialogBinding.dataField.getEditText().getText().toString();
 
-            salvarTransicao(new TransacaoModel(data, categoria, metodo, tipo, Double.parseDouble(valor)));
+            salvarTransicao(new TransacaoModel(data, categoria, metodo, contaOrigem, tipo, Double.parseDouble(valor)));
 
             dialogBinding.valorField.getEditText().setText("");
-            dialogBinding.categoriaField.getEditText().setText("");
+            dialogBinding.contaOrigemField.getEditText().setText("");
+            dialogBinding.categoriaMenu.getEditText().setText("");
             dialogBinding.metodoPagamentoField.getEditText().setText("");
         });
 
